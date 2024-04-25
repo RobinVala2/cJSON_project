@@ -32,25 +32,34 @@ int main() {
 
         switch (choice) {
             case 1:
-                printf("Choose file to load: ");
-                scanf("%99s", file_name);
-                // Load data from a file
-                people = loadData(file_name, &num_people);
-                if (!people) {
-                    printf("Loading data failed\n");
-                    return 1;
-                } else {
-                    printf("Data loaded succesfully\n");
+                while (1){
+                    printf("Choose file to load or enter 'q' to quit: ");
+                    scanf("%99s", file_name);
+                    // Check if user want to leave
+                    if (strcmp(file_name, "q") == 0) {
+                        printf("Returning to main menu.\n");
+                        break;
+                    }
+                    // Load data from a file
+                    people = loadData(file_name, &num_people);
+                    if (!people) {
+                        printf("Loading data failed. Try again.\n");
+                    } else {
+                        printf("Data loaded succesfully\n");
+                        break; 
+                    }
                 }
-                break; 
-
             case 2:
-                for (int i = 0; i < num_people; ++i) {
-                    printf("Person %d:\n", i + 1);
-                    printPersonData(&people[i]);
+                if (num_people == 0)
+                {
+                    printf("No data available. Please load data first.\n");
+                } else {
+                    for (int i = 0; i < num_people; ++i) {
+                        printf("Person %d:\n", i + 1);
+                        printPersonData(&people[i]);
+                    }
                 }
                 break;
-
             case 3:
                 printf("Modify data based on ID\n");
                 modifyDataBasedOnID(people, num_people);
@@ -70,14 +79,20 @@ int main() {
                 break;
 
             case 5:
-                addNewData(&people, &num_people);
+                if (num_people == 0){
+                    printf("No data available. Please load data first.\n");
+                } else {
+                    addNewData(&people, &num_people);
+                }
                 break;
-
             case 6:
-                printf("Save data to file.\n");
-                saveData(file_name, people, num_people);
+                if (num_people == 0){
+                    printf("No data available. Please load data first.\n");
+                } else {
+                     printf("Saving data to file.\n");
+                    saveData(file_name, people, num_people);
+                }
                 break;
-
             case 7:
                 printf("Exiting program.\n");
                 break;

@@ -81,7 +81,7 @@ Person *loadData(const char *filename, int *num_people) {
 
     file_content[file_size] = '\0'; // add null terminator
 
-    printf("File content: %s\n", file_content);
+    //printf("File content: %s\n", file_content);
 
     // JSON Parsing
     cJSON *json = cJSON_Parse(file_content); // parse json content
@@ -212,53 +212,64 @@ void printPersonData(const Person *person) {
 void modifyPersonData(Person *person) {
     int choice;
 
-    printf("Available options for modification:\n");
-    printf("1. Modify ID\n");
-    printf("2. Modify Key-Value Pair\n");
+    do{
+        printf("Available options for modification:\n");
+        printf("0. Exit Modification\n");
+        printf("1. Modify ID\n");
+        printf("2. Modify Key-Value Pair\n");
 
-    printf("Enter your choice: ");
-    scanf("%d", &choice);
+        printf("Enter your choice: ");
+        if (scanf("%d", &choice) != 1) {
+            printf("Invalid input. Please enter a valid choice (1, 2, or 0).\n");
+            while (getchar() != '\n'); 
+            continue; 
+        }
+        
+        while (getchar() != '\n'); 
 
-    switch (choice) {
-        case 1:
-            printf("Enter new ID: ");
-            while (scanf("%d", &person->id) !=1)
-            {
-                printf("Invalid input. Please enter a number: ");
-                scanf("%*s");
-            }
-            break;
-        case 2:
-            if (!person->data) {
-                printf("No data available for modification.\n");
+        switch (choice) {
+            case 1:
+                printf("Enter new ID: ");
+                while (scanf("%d", &person->id) !=1)
+                {
+                    printf("Invalid input.\nPlease enter a number: ");
+                    scanf("%*s");
+                }
+                return;
+            case 2:
+                if (!person->data) {
+                    printf("No data available for modification.\n");
+                    break;
+                }
+
+                char key[100], value[100];
+                printf("Enter key to modify: ");
+                scanf("%99s", key);
+                printf("Enter new value: ");
+                scanf("%99s", value);
+
+                // Find the key in the linked list and modify its value
+                KeyValue *key_value = person->data;
+                while (key_value && strcmp(key_value->key, key) != 0) {
+                    key_value = key_value->next;
+                }
+
+                if (key_value) {
+                    // Update the linked list node with the new value
+                    free(key_value->value);
+                    key_value->value = strdup(value);
+                } else {
+                    printf("Key not found.\n");
+                }
                 break;
-            }
-
-            char key[100], value[100];
-            printf("Enter key to modify: ");
-            scanf("%99s", key);
-            printf("Enter new value: ");
-            scanf("%99s", value);
-
-            // Find the key in the linked list and modify its value
-            KeyValue *key_value = person->data;
-            while (key_value && strcmp(key_value->key, key) != 0) {
-                key_value = key_value->next;
-            }
-
-            if (key_value) {
-                // Update the linked list node with the new value
-                free(key_value->value);
-                key_value->value = strdup(value);
-            } else {
-                printf("Key not found.\n");
-            }
-            break;
-
-        default:
-            printf("Invalid choice.\n");
-            break;
-    }
+            case 0:
+                printf("Exiting modification.\n");
+                return;
+            default:
+                printf("Invalid choice.\n");
+                break;
+        }
+    } while (1);
 }
 
 // Function to save modified data back to a file
@@ -348,8 +359,12 @@ void modifyDataBasedOnID(Person *people, int num_people) {
     int personID;
     do {
         printf("Enter the ID of the person to modify (or enter 0 to return to the main menu): ");
-        scanf("%d", &personID);
-        getchar();
+        
+        if(scanf("%d", &personID) != 1){
+            printf("Invalid input. Please enter a valid number.\n");
+            while (getchar() != '\n');
+            continue;
+        }
 
         if (personID == 0) {
             return;
