@@ -164,13 +164,13 @@ void test_modifyDataBasedOnID() {
         addKeyValue(&(people[i].data), "City", "Brno");
     }
 
-    provideInput("1\n2\nName\nJane\n");
+    provideInput("1\n2\nName\nJane\n0\n");
     modifyDataBasedOnID(people, num_people);
 
-    provideInput("2\n2\nAge\n31\n");
+    provideInput("2\n2\nAge\n31\n0\n");
     modifyDataBasedOnID(people, num_people);
 
-    provideInput("3\n2\nCity\nPraha\n");
+    provideInput("3\n2\nCity\nPraha\n0\n");
     modifyDataBasedOnID(people, num_people);
 
     provideInput("4\n1\n5\n");
@@ -211,7 +211,7 @@ void test_saveData() {
 
     // Initialize test data
     Person *people = loadData("./tests/testLoadData.json", &num_people);
-    provideInput("2\n2\nname\nJames\n");
+    provideInput("2\n2\nname\nJames\n0\n");
     modifyDataBasedOnID(people, num_people);
 
     // Call the function
